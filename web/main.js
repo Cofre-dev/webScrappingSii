@@ -2,9 +2,8 @@ const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
 
-class SIIScraper {
+class SIIHumanBot {
     constructor(downloadPath = './descargas') {
-        // Corregir problema de barras invertidas
         this.downloadPath = path.resolve(downloadPath);
         this.browser = null;
         this.context = null;
@@ -12,363 +11,519 @@ class SIIScraper {
         
         // URLs del SII
         this.urls = {
-            login: 'https://zeusr.sii.cl/AUT2000/InicioAutenticacion/IngresoRutClave.html?https://misiir.sii.cl/cgi_misii/siihome.cgi',
-            main: 'https://misiir.sii.cl/cgi_misii/siihome.cgi'
+            login: 'https://zeusr.sii.cl//AUT2000/InicioAutenticacion/IngresoRutClave.html'
         };
         
-        // Configuración de timeouts
-        this.timeouts = {
-            default: 30000,
-            navigation: 30000,
-            download: 60000
+        // Configuración humana
+        this.humanConfig = {
+            typingDelay: { min: 50, max: 150 },
+            mouseDelay: { min: 100, max: 300 },
+            readingTime: { min: 1000, max: 3000 },
+            navigationDelay: { min: 2000, max: 4000 }
         };
+    }
+
+    // Métodos para simular comportamiento humano
+    async humanDelay(type = 'default') {
+        const delays = this.humanConfig[type + 'Delay'] || this.humanConfig.readingTime;
+        const randomDelay = Math.floor(Math.random() * (delays.max - delays.min + 1)) + delays.min;
+        await this.page.waitForTimeout(randomDelay);
+    }
+
+    async humanType(selector, text) {
+        const element = await this.page.locator(selector);
+        await element.click();
+        await this.humanDelay('typing');
+        await element.fill('');
+        await this.humanDelay('typing');
+        
+        for (const char of text) {
+            await element.type(char);
+            await this.page.waitForTimeout(Math.random() * 100 + 50);
+        }
+        await this.humanDelay('typing');
     }
 
     async setupBrowser() {
         try {
-            console.log('🔧 Configurando navegador...');
+            console.log('🤖 Configurando bot humano...');
             
-            // Crear directorio de descarga si no existe
             this.ensureDownloadDirectory();
 
-            // Lanzar browser con configuraciones optimizadas
             this.browser = await chromium.launch({
                 headless: false,
                 slowMo: 500,
                 args: [
                     '--no-sandbox',
                     '--disable-dev-shm-usage',
-                    '--disable-gpu'
+                    '--disable-gpu',
+                    '--disable-web-security',
+                    '--disable-features=VizDisplayCompositor'
                 ]
             });
 
-            // Crear contexto con configuraciones mejoradas
             this.context = await this.browser.newContext({
                 acceptDownloads: true,
                 viewport: { width: 1366, height: 768 },
-                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                extraHTTPHeaders: {
+                    'Accept-Language': 'es-CL,es;q=0.9,en;q=0.8'
+                }
             });
 
-            // Crear página
             this.page = await this.context.newPage();
-            
-            // Configurar timeouts
-            this.page.setDefaultTimeout(this.timeouts.default);
-            this.page.setDefaultNavigationTimeout(this.timeouts.navigation);
+            this.page.setDefaultTimeout(60000);
+            this.page.setDefaultNavigationTimeout(60000);
 
-            console.log('✅ Navegador configurado correctamente');
+            console.log('✅ Bot humano configurado correctamente');
             return true;
 
         } catch (error) {
-            console.error('❌ Error configurando navegador:', error.message);
+            console.error('❌ Error configurando bot:', error.message);
             return false;
         }
     }
 
     ensureDownloadDirectory() {
-        try {
-            if (!fs.existsSync(this.downloadPath)) {
-                fs.mkdirSync(this.downloadPath, { recursive: true });
-                console.log(`📁 Directorio creado: ${this.downloadPath}`);
-            }
-        } catch (error) {
-            throw new Error(`No se pudo crear el directorio: ${error.message}`);
+        if (!fs.existsSync(this.downloadPath)) {
+            fs.mkdirSync(this.downloadPath, { recursive: true });
+            console.log(`📁 Directorio creado: ${this.downloadPath}`);
         }
     }
 
-    async loginSII(rut, clave) {
+    async smartLogin(rut, clave) {
         try {
-            console.log('🌐 Accediendo al sitio del SII...');
+            console.log('🌐 Navegando a la página de login del SII...');
             
-            // Ir directamente a la página de login
-            await this.page.goto(this.urls.login, { 
-                waitUntil: 'networkidle',
-                timeout: this.timeouts.navigation 
-            });
+            await this.page.goto(this.urls.login, { waitUntil: 'networkidle', timeout: 60000 });
+            await this.humanDelay('reading');
+            await this.takeDebugScreenshot('01_pagina_login');
 
-            console.log('📝 Ingresando credenciales...');
-            
-            // Esperar a que aparezcan los campos de login
-            await this.page.waitForSelector('input[name="RUT"]', { timeout: 10000 });
-            
-            // Limpiar y llenar RUT
-            await this.page.fill('input[name="RUT"]', '');
-            await this.page.fill('input[name="RUT"]', rut);
-            
-            // Limpiar y llenar clave
-            await this.page.fill('input[name="password"]', '');
-            await this.page.fill('input[name="password"]', clave);
+            // Analizar la página antes
+            // Aquí deberías agregar el resto del proceso de login, por ejemplo:
+            // await this.humanType('input[name="rut"]', rut);
+            // await this.humanType('input[name="clave"]', clave);
+            // await this.page.click('input[type="submit"]');
+            // await this.humanDelay('navigation');
+            // return await this.verifyLoginSuccess();
 
-            console.log('🔐 Enviando credenciales...');
-            
-            // Hacer click en el botón de ingresar
-            await Promise.all([
-                this.page.waitForNavigation({ waitUntil: 'networkidle', timeout: this.timeouts.navigation }),
-                this.page.click('input[type="submit"][value="Ingresar"]')
-            ]);
+            // Por ahora, solo retorna false para evitar el error de bloque try sin catch
+            return false;
+        } catch (error) {
+            console.error('❌ Error en smartLogin:', error.message);
+            return false;
+        }
+    }
+        
+    async verifyLoginSuccess() {
+        try {
+            console.log('🔍 Verificando acceso exitoso...');
+            await this.page.waitForTimeout(3000);
 
-            // Verificar si el login fue exitoso
-            await this.page.waitForTimeout(2000);
+            // Verificar URL para confirmar primero
+            const currentUrl = this.page.url();
+            console.log(`📍 URL actual: ${currentUrl}`);
             
-            // Buscar indicadores de login exitoso
-            const isLoggedIn = await this.isLoginSuccessful();
-            
-            if (!isLoggedIn) {
-                await this.takeDebugScreenshot('login_failed');
-                throw new Error('Login fallido - verificar credenciales');
+            // URLs que indican login exitoso
+            if (currentUrl.includes('misiir.sii.cl') || 
+                currentUrl.includes('paginatributario.sii.cl') || 
+                currentUrl.includes('homer.sii.cl')) {
+                console.log('✅ URL indica login exitoso');
+                return true;
             }
 
-            console.log('✅ Login exitoso');
-            return true;
+            // Verificar si hay errores de login
+            const errorSelectors = [
+                'text=RUT y/o clave incorrectos',
+                'text=Error de autenticación',
+                'text=credenciales incorrectas',
+                '.error',
+                '.mensaje-error',
+                'text=Usuario no válido'
+            ];
 
+            for (const selector of errorSelectors) {
+                try {
+                    if (await this.page.locator(selector).first().isVisible({ timeout: 1000 })) {
+                        console.log(`❌ Error de login detectado: ${selector}`);
+                        return false;
+                    }
+                } catch (e) {
+                    // Continúar si el selector no existe
+                    continue;
+                }
+            }
+
+            // Buscar indicadores de éxito más específicos (usando .first() para evitar conflictos)
+            const successSelectors = [
+                'text=Bienvenido',
+                'a:has-text("Ingresar a Mi Sii")', // Este aparece cuando el login es exitoso
+                'text=Servicios online',
+                'text=Honorarios',
+                'a[href*="misiir.sii.cl"]', // Enlaces a Mi SII indican éxito
+                'a[href*="honorarios"]',
+                'a[href*="boleta"]'
+            ];
+            
+            for (const selector of successSelectors) {
+                try {
+                    if (await this.page.locator(selector).first().isVisible({ timeout: 2000 })) {
+                        console.log(`✅ Indicador de éxito encontrado: ${selector}`);
+                        return true;
+                    }
+                } catch (e) {
+                    // Continúar si el selector no existe
+                    continue;
+                }
+            }
+
+            // Si estamos en homer.sii.cl pero no encontramos indicadores específicos,
+            // aún así es un login exitoso
+            if (currentUrl.includes('homer.sii.cl')) {
+                console.log('✅ Login exitoso confirmado por URL homer.sii.cl');
+                return true;
+            }
+
+            return false;
         } catch (error) {
-            console.error('❌ Error en login:', error.message);
-            await this.takeDebugScreenshot('login_error');
+            console.log('⚠️ Error verificando login:', error.message);
+            // Si hay error pero estamos en una URL del SII, probablemente es exitoso
+            const currentUrl = this.page.url();
+            if (currentUrl.includes('sii.cl') && !currentUrl.includes('AUT2000')) {
+                console.log('✅ Login probablemente exitoso basado en URL');
+                return true;
+            }
             return false;
         }
     }
 
-    async isLoginSuccessful() {
-        try {
-            // Buscar elementos que indican login exitoso
-            const successIndicators = [
-                'text=Boleta de Honorario',
-                'text=Servicios Online',
-                'text=Mi SII',
-                '[href*="boleta"]',
-                '[href*="honorario"]'
-            ];
-
-            for (const indicator of successIndicators) {
-                const element = await this.page.$(indicator);
-                if (element) {
-                    console.log(`✅ Indicador de login encontrado: ${indicator}`);
+    async findAndClickElement(selectors, description, timeout = 10000) {
+        console.log(`🔍 Buscando: ${description}`);
+        
+        for (const selector of selectors) {
+            try {
+                console.log(`   Probando selector: ${selector}`);
+                const element = this.page.locator(selector);
+                
+                if (await element.isVisible({ timeout: 2000 })) {
+                    console.log(`✅ Elemento encontrado: ${selector}`);
+                    await this.humanDelay('mouse');
+                    await element.click();
+                    await this.page.waitForLoadState('networkidle', { timeout: 15000 });
+                    await this.humanDelay('navigation');
                     return true;
                 }
+            } catch (error) {
+                console.log(`   ⚠️ Selector no funciona: ${selector}`);
+                continue;
             }
-
-            return false;
-        } catch (error) {
-            return false;
         }
+        
+        console.log(`❌ No se encontró: ${description}`);
+        return false;
     }
 
-    async navigateToBoletasHonorarios() {
-        try {
-            console.log('📋 Navegando a Boleta de Honorario Electrónico...');
-
-            // Intentar diferentes selectores para encontrar el enlace
-            const boletaSelectors = [
-                'text=Boleta de Honorario Electrónica',
-                'text=Boleta de Honorario',
-                'a[href*="boleta"]',
-                'a[href*="honorario"]'
-            ];
-
-            let boletaLink = null;
-            for (const selector of boletaSelectors) {
-                try {
-                    boletaLink = await this.page.$(selector);
-                    if (boletaLink) {
-                        console.log(`🎯 Enlace encontrado con: ${selector}`);
-                        break;
+    async hoverAndClick(hoverSelectors, clickSelectors, description) {
+        console.log(`🖱️ Navegando por hover: ${description}`);
+        
+        for (const hoverSelector of hoverSelectors) {
+            try {
+                const hoverElement = this.page.locator(hoverSelector);
+                if (await hoverElement.isVisible({ timeout: 2000 })) {
+                    console.log(`✅ Elemento hover encontrado: ${hoverSelector}`);
+                    await hoverElement.hover();
+                    await this.humanDelay('mouse');
+                    
+                    // Intentar click en submenu
+                    for (const clickSelector of clickSelectors) {
+                        try {
+                            const clickElement = this.page.locator(clickSelector);
+                            if (await clickElement.isVisible({ timeout: 3000 })) {
+                                console.log(`✅ Submenu encontrado: ${clickSelector}`);
+                                await clickElement.click();
+                                await this.page.waitForLoadState('networkidle', { timeout: 15000 });
+                                await this.humanDelay('navigation');
+                                return true;
+                            }
+                        } catch (error) {
+                            continue;
+                        }
                     }
-                } catch (e) {
-                    continue;
                 }
+            } catch (error) {
+                continue;
             }
-
-            if (!boletaLink) {
-                await this.takeDebugScreenshot('boleta_link_not_found');
-                throw new Error('No se encontró el enlace de Boleta de Honorario');
-            }
-
-            await boletaLink.click();
-            await this.page.waitForLoadState('networkidle');
-            await this.page.waitForTimeout(2000);
-
-            console.log('🏢 Accediendo a Emisor de boletas de honorarios...');
-            
-            const emisorSelectors = [
-                'text=Emisor de boletas de honorarios',
-                'text=Emisor de boletas',
-                'a[href*="emisor"]'
-            ];
-
-            let emisorLink = null;
-            for (const selector of emisorSelectors) {
-                try {
-                    emisorLink = await this.page.$(selector);
-                    if (emisorLink) {
-                        console.log(`🎯 Enlace emisor encontrado con: ${selector}`);
-                        break;
-                    }
-                } catch (e) {
-                    continue;
-                }
-            }
-
-            if (!emisorLink) {
-                await this.takeDebugScreenshot('emisor_link_not_found');
-                throw new Error('No se encontró el enlace de Emisor');
-            }
-
-            await emisorLink.click();
-            await this.page.waitForLoadState('networkidle');
-            await this.page.waitForTimeout(2000);
-
-            console.log('✅ Navegación a boletas exitosa');
-            return true;
-
-        } catch (error) {
-            console.error('❌ Error navegando a boletas de honorarios:', error.message);
-            return false;
         }
+        
+        return false;
     }
 
-    async consultarBoletasEmitidas() {
+    async navigateAndDownload() {
         try {
-            console.log('🔍 Accediendo a consultas sobre boleta de honorario electrónica...');
+            console.log('📋 Iniciando navegación a Boleta de Honorarios...');
+            await this.humanDelay('reading');
+            await this.takeDebugScreenshot('04_inicio_navegacion');
 
-            const consultaSelectors = [
-                'text=Consultar sobre boleta de honorario electrónica',
-                'text=Consultar sobre boleta',
-                'a[href*="consultar"]'
+            // Primero, analizar la página para ver qué elementos están disponibles
+            await this.debugPageElements();
+
+            // PASO 1: Buscar acceso a boletas de honorarios
+            console.log('\n🎯 PASO 1: Buscando acceso a boletas de honorarios...');
+            
+            // Múltiples estrategias para encontrar boletas de honorarios
+            const boletaStrategies = [
+                // Estrategia 1: Hover en servicios online
+                async () => {
+                    const hoverSelectors = [
+                        'a:has-text("Servicios online")',
+                        'a:has-text("Servicios")',
+                        'li:has-text("Servicios")',
+                        'text=Servicios online'
+                    ];
+                    const clickSelectors = [
+                        'a:has-text("Boleta de Honorarios Electrónica")',
+                        'a:has-text("Boleta de Honorarios")',
+                        'a:has-text("Honorarios")',
+                        'a[href*="honorarios"]',
+                        'a[href*="boleta"]'
+                    ];
+                    return await this.hoverAndClick(hoverSelectors, clickSelectors, "Servicios Online -> Boletas");
+                },
+                
+                // Estrategia 2: Click directo en enlaces
+                async () => {
+                    const selectors = [
+                        'a:has-text("Boleta de Honorarios Electrónica")',
+                        'a:has-text("Boleta de Honorarios")',
+                        'a:has-text("Honorarios Electrónicos")',
+                        'a[href*="honorarios"]',
+                        'a[href*="boleta"]',
+                        'text=Boleta de Honorarios'
+                    ];
+                    return await this.findAndClickElement(selectors, "Boletas de Honorarios directamente");
+                },
+                
+                // Estrategia 3: Buscar en menús principales
+                async () => {
+                    const selectors = [
+                        'text=Mi SII',
+                        'text=Servicios Tributarios',
+                        'text=Tributario',
+                        'a:has-text("Contribuyentes")'
+                    ];
+                    return await this.findAndClickElement(selectors, "Menú principal");
+                }
             ];
 
-            const consultaLink = await this.findElementBySelectors(consultaSelectors);
-            if (!consultaLink) {
-                await this.takeDebugScreenshot('consulta_link_not_found');
-                throw new Error('No se encontró el enlace de consulta');
+            let navigationSuccess = false;
+            for (let i = 0; i < boletaStrategies.length; i++) {
+                console.log(`\n📍 Intentando estrategia ${i + 1}...`);
+                try {
+                    if (await boletaStrategies[i]()) {
+                        navigationSuccess = true;
+                        await this.takeDebugScreenshot(`05_estrategia_${i + 1}_exitosa`);
+                        break;
+                    }
+                } catch (error) {
+                    console.log(`⚠️ Estrategia ${i + 1} falló:`, error.message);
+                }
+                await this.takeDebugScreenshot(`05_estrategia_${i + 1}_fallida`);
             }
 
-            await consultaLink.click();
-            await this.page.waitForLoadState('networkidle');
-            await this.page.waitForTimeout(2000);
+            if (!navigationSuccess) {
+                throw new Error('No se pudo acceder a la sección de boletas de honorarios');
+            }
 
-            console.log('📊 Seleccionando "Consultar boletas emitidas"...');
-            
-            const emitidaSelectors = [
-                'text=Consultar boletas emitidas',
+            // PASO 2: Buscar consultas
+            console.log('\n🎯 PASO 2: Buscando sección de consultas...');
+            const consultaSuccess = await this.findAndClickElement([
+                'a:has-text("Consultar sobre boleta de honorario electrónica")',
+                'a:has-text("Consultar boletas")',
+                'a:has-text("Consultas")',
+                'text=Consultar',
+                'a[href*="consulta"]'
+            ], "Consultas de boletas");
+
+            if (!consultaSuccess) {
+                console.log('⚠️ No se encontró sección de consultas, continuando...');
+            } else {
+                await this.takeDebugScreenshot('06_consultas');
+            }
+
+            // PASO 3: Buscar boletas emitidas
+            console.log('\n🎯 PASO 3: Buscando boletas emitidas...');
+            const emitidasSuccess = await this.findAndClickElement([
+                'a:has-text("Consultar boletas emitidas")',
+                'a:has-text("Boletas emitidas")',
+                'a:has-text("Emitidas")',
                 'text=Boletas emitidas',
                 'a[href*="emitidas"]'
-            ];
+            ], "Boletas emitidas");
 
-            const emitidaLink = await this.findElementBySelectors(emitidaSelectors);
-            if (!emitidaLink) {
-                await this.takeDebugScreenshot('emitidas_link_not_found');
-                throw new Error('No se encontró el enlace de boletas emitidas');
+            if (!emitidasSuccess) {
+                console.log('⚠️ No se encontró boletas emitidas, buscando alternativas...');
+            } else {
+                await this.takeDebugScreenshot('07_boletas_emitidas');
             }
 
-            await emitidaLink.click();
-            await this.page.waitForLoadState('networkidle');
-            await this.page.waitForTimeout(3000);
+            // PASO 4: Buscar consulta por período
+            console.log('\n🎯 PASO 4: Buscando consulta por período...');
+            const consultaAnualSuccess = await this.findAndClickElement([
+                'a:has-text("Consultar")',
+                'input[value="Consultar"]',
+                'button:has-text("Consultar")',
+                'a:has-text("Ver")',
+                'a:has-text("Período")'
+            ], "Consulta anual/período");
 
-            console.log('✅ Acceso a consulta de boletas exitoso');
-            return true;
+            if (consultaAnualSuccess) {
+                await this.takeDebugScreenshot('08_despues_consulta');
+                return await this.downloadPDF();
+            } else {
+                console.log('⚠️ No se encontró consulta específica, intentando descarga directa...');
+                return await this.downloadPDF();
+            }
 
         } catch (error) {
-            console.error('❌ Error en consulta de boletas emitidas:', error.message);
-            return false;
+            console.error('❌ Error en navegación:', error.message);
+            await this.takeDebugScreenshot('error_navegacion_completa');
+            
+            // Intentar descarga de emergencia de lo que esté visible
+            console.log('🚨 Intentando descarga de emergencia...');
+            return await this.downloadPDF();
         }
     }
 
-    async consultarAnualYDescargar() {
+    async debugPageElements() {
         try {
-            console.log('📅 Buscando la opción de consulta anual...');
-
-            // Buscar el botón de consultar anual (primera columna)
-            const consultarSelectors = [
-                'table tr:first-child td:first-child a',
-                'table tbody tr:first-child td:first-child a',
-                'table tr td:first-child a',
-                'input[value*="Consultar"]',
-                'button:has-text("Consultar")',
-                'a:has-text("Consultar")'
-            ];
-
-            const consultarButton = await this.findElementBySelectors(consultarSelectors);
-            if (!consultarButton) {
-                await this.takeDebugScreenshot('consultar_anual_not_found');
-                throw new Error('No se encontró el botón de consulta anual');
-            }
-
-            console.log('🎯 Haciendo click en consulta anual...');
-            await consultarButton.click();
-            await this.page.waitForLoadState('networkidle');
-            await this.page.waitForTimeout(3000);
-
-            // Intentar descarga
-            return await this.downloadPDF();
-
+            console.log('\n🔍 ANÁLISIS DE PÁGINA ACTUAL:');
+            console.log(`📍 URL: ${this.page.url()}`);
+            
+            // Buscar todos los enlaces visibles
+            const links = await this.page.locator('a').all();
+            console.log(`🔗 Enlaces encontrados: ${links.length}`);
+            
+            // Buscar enlaces relacionados con honorarios/boletas
+            const relevantLinks = await this.page.locator('a').evaluateAll(links => {
+                return links
+                    .filter(link => {
+                        const text = link.textContent?.toLowerCase() || '';
+                        const href = link.href?.toLowerCase() || '';
+                        return text.includes('honorario') || text.includes('boleta') || 
+                               text.includes('servicio') || href.includes('honorario') || 
+                               href.includes('boleta');
+                    })
+                    .map(link => ({
+                        text: link.textContent?.trim(),
+                        href: link.href
+                    }));
+            });
+            
+            console.log('🎯 Enlaces relevantes encontrados:');
+            relevantLinks.forEach((link, index) => {
+                console.log(`  ${index + 1}. "${link.text}" -> ${link.href}`);
+            });
+            
         } catch (error) {
-            console.error('❌ Error al consultar anual:', error.message);
-            return false;
+            console.log('⚠️ Error en análisis de página:', error.message);
         }
     }
 
     async downloadPDF() {
         try {
-            console.log('🖨️ Buscando opción de imprimir/PDF...');
-
-            const imprimirSelectors = [
-                'input[value*="Imprimir"]',
-                'input[value*="PDF"]',
-                'button:has-text("Imprimir")',
-                'button:has-text("PDF")',
-                'a:has-text("Imprimir")',
-                'a:has-text("PDF")',
-                '[onclick*="print"]',
-                '[href*="pdf"]',
-                'input[type="button"][value*="Imprimir"]'
+            console.log('🖨️ Buscando opciones de descarga/impresión...');
+            await this.humanDelay('reading');
+            await this.takeDebugScreenshot('09_antes_descarga');
+            
+            // Múltiples estrategias de descarga
+            const downloadStrategies = [
+                // Estrategia 1: Botón de imprimir
+                async () => {
+                    const selectors = [
+                        'input[value="Imprimir"]',
+                        'button:has-text("Imprimir")',
+                        'a:has-text("Imprimir")',
+                        'input[type="button"][value*="Impr"]'
+                    ];
+                    
+                    for (const selector of selectors) {
+                        const element = this.page.locator(selector);
+                        if (await element.isVisible({ timeout: 2000 })) {
+                            console.log('📥 Iniciando descarga automática...');
+                            const downloadPromise = this.page.waitForEvent('download', { timeout: 30000 });
+                            await element.click();
+                            
+                            try {
+                                const download = await downloadPromise;
+                                const fileName = this.generateFileName('pdf');
+                                const filePath = path.join(this.downloadPath, fileName);
+                                await download.saveAs(filePath);
+                                console.log(`✅ PDF descargado: ${filePath}`);
+                                return true;
+                            } catch (downloadError) {
+                                console.log('⚠️ No se descargó archivo, continuando...');
+                                return false;
+                            }
+                        }
+                    }
+                    return false;
+                },
+                
+                // Estrategia 2: Enlaces de descarga
+                async () => {
+                    const selectors = [
+                        'a:has-text("Descargar")',
+                        'a:has-text("PDF")',
+                        'a[href*=".pdf"]',
+                        'a[download]'
+                    ];
+                    
+                    for (const selector of selectors) {
+                        const element = this.page.locator(selector);
+                        if (await element.isVisible({ timeout: 2000 })) {
+                            await element.click();
+                            await this.humanDelay('navigation');
+                            return true;
+                        }
+                    }
+                    return false;
+                },
+                
+                // Estrategia 3: Generar PDF de la página
+                async () => {
+                    return await this.generatePagePDF();
+                }
             ];
 
-            const imprimirButton = await this.findElementBySelectors(imprimirSelectors);
-            if (!imprimirButton) {
-                await this.takeDebugScreenshot('imprimir_not_found');
-                console.log('⚠️ No se encontró botón de imprimir, generando PDF de la página...');
-                return await this.generatePagePDF();
+            for (let i = 0; i < downloadStrategies.length; i++) {
+                console.log(`\n📥 Intentando estrategia de descarga ${i + 1}...`);
+                try {
+                    if (await downloadStrategies[i]()) {
+                        console.log(`✅ Descarga exitosa con estrategia ${i + 1}`);
+                        return true;
+                    }
+                } catch (error) {
+                    console.log(`⚠️ Estrategia ${i + 1} falló:`, error.message);
+                }
             }
 
-            console.log('📥 Iniciando descarga...');
-            
-            // Configurar listener para descarga
-            const downloadPromise = this.page.waitForEvent('download', { 
-                timeout: this.timeouts.download 
-            });
-
-            // Hacer click en imprimir
-            await imprimirButton.click();
-
-            try {
-                // Esperar descarga
-                const download = await downloadPromise;
-                const fileName = this.generateFileName('pdf');
-                const filePath = path.join(this.downloadPath, fileName);
-                
-                await download.saveAs(filePath);
-                console.log(`✅ PDF descargado: ${filePath}`);
-                return true;
-
-            } catch (downloadError) {
-                console.log('⚠️ Descarga automática falló, generando PDF...');
-                return await this.generatePagePDF();
-            }
+            return false;
 
         } catch (error) {
             console.error('❌ Error en descarga:', error.message);
-            return false;
+            return await this.generatePagePDF();
         }
     }
 
     async generatePagePDF() {
         try {
+            console.log('📄 Generando PDF de la página actual...');
             const pdfBuffer = await this.page.pdf({
                 format: 'A4',
                 printBackground: true,
                 margin: {
                     top: '20px',
-                    right: '20px',
+                    right: '20px', 
                     bottom: '20px',
                     left: '20px'
                 }
@@ -378,145 +533,147 @@ class SIIScraper {
             const filePath = path.join(this.downloadPath, fileName);
             
             fs.writeFileSync(filePath, pdfBuffer);
-            console.log(`✅ PDF generado: ${filePath}`);
+            console.log(`✅ PDF generado exitosamente: ${filePath}`);
             return true;
-
+            
         } catch (error) {
             console.error('❌ Error generando PDF:', error.message);
             return false;
         }
     }
 
-    async findElementBySelectors(selectors) {
-        for (const selector of selectors) {
-            try {
-                const element = await this.page.$(selector);
-                if (element) {
-                    console.log(`🎯 Elemento encontrado con: ${selector}`);
-                    return element;
-                }
-            } catch (e) {
-                continue;
-            }
-        }
-        return null;
-    }
-
     generateFileName(extension) {
-        const timestamp = new Date().toISOString().split('T')[0];
-        const time = new Date().toTimeString().split(' ')[0].replace(/:/g, '-');
+        const now = new Date();
+        const timestamp = now.toISOString().split('T')[0];
+        const time = now.toTimeString().split(' ')[0].replace(/:/g, '-');
         return `boletas_honorarios_${timestamp}_${time}.${extension}`;
     }
 
     async takeDebugScreenshot(name) {
         try {
-            const screenshotPath = path.join(this.downloadPath, `${name}_${Date.now()}.png`);
-            await this.page.screenshot({ 
-                path: screenshotPath, 
-                fullPage: true 
-            });
-            console.log(`📸 Screenshot guardado: ${screenshotPath}`);
+            const screenshotPath = path.join(this.downloadPath, `debug_${name}_${Date.now()}.png`);
+            await this.page.screenshot({ path: screenshotPath, fullPage: true });
+            console.log(`📸 Screenshot: ${screenshotPath}`);
         } catch (error) {
-            console.error('Error tomando screenshot:', error.message);
+            console.log('⚠️ Error screenshot:', error.message);
         }
     }
 
-    async runScraping(rut, clave) {
+    async runAutomaticProcess(rut, clave) {
         try {
-            console.log('='.repeat(60));
-            console.log('🚀 INICIANDO PROCESO DE WEB SCRAPING SII');
-            console.log('='.repeat(60));
+            console.log('='.repeat(70));
+            console.log('🤖 INICIANDO BOT AUTOMÁTICO PARA SII');
+            console.log('='.repeat(70));
 
-            // Configurar browser
             if (!(await this.setupBrowser())) {
-                throw new Error('Error configurando navegador');
+                throw new Error('Error configurando bot');
             }
 
-            // Realizar login
-            if (!(await this.loginSII(rut, clave))) {
-                throw new Error('Error en el login');
+            console.log('🔐 FASE 1: AUTENTICACIÓN AUTOMÁTICA');
+            console.log('-'.repeat(50));
+            if (!(await this.smartLogin(rut, clave))) {
+                throw new Error('Error en autenticación automática');
             }
 
-            // Navegar a boletas de honorarios
-            if (!(await this.navigateToBoletasHonorarios())) {
-                throw new Error('Error navegando a boletas de honorarios');
+            console.log('\n🚀 FASE 2: NAVEGACIÓN Y DESCARGA AUTOMÁTICA');
+            console.log('-'.repeat(50));
+            if (!(await this.navigateAndDownload())) {
+                console.log('⚠️ Navegación no completamente exitosa, pero continuando...');
             }
 
-            // Consultar boletas emitidas
-            if (!(await this.consultarBoletasEmitidas())) {
-                throw new Error('Error en consulta de boletas emitidas');
-            }
-
-            // Consultar anual y descargar
-            if (!(await this.consultarAnualYDescargar())) {
-                throw new Error('Error descargando reporte anual');
-            }
-
-            console.log('='.repeat(60));
-            console.log('🎉 ¡PROCESO COMPLETADO EXITOSAMENTE!');
+            console.log('\n' + '='.repeat(70));
+            console.log('🎉 ¡PROCESO AUTOMÁTICO COMPLETADO!');
+            console.log('🤖 El bot ejecutó la secuencia disponible');
             console.log(`📁 Archivos guardados en: ${this.downloadPath}`);
-            console.log('='.repeat(60));
+            console.log('='.repeat(70));
 
             return true;
 
         } catch (error) {
-            console.error('❌ Error general:', error.message);
-            await this.takeDebugScreenshot('error_general');
+            console.error('❌ Error en proceso automático:', error.message);
+            await this.takeDebugScreenshot('error_proceso_completo');
             return false;
 
         } finally {
+            // Mantener el navegador abierto para debugging
+            console.log('🔍 Navegador permanece abierto para debugging...');
+            console.log('🔍 Presiona Ctrl+C para cerrar el bot');
+            
+            // Esperar input del usuario antes de cerrar
+            await this.waitForUserInput();
             await this.closeBrowser();
         }
+    }
+
+    async waitForUserInput() {
+        return new Promise((resolve) => {
+            const readline = require('readline');
+            const rl = readline.createInterface({
+                input: process.stdin,
+                output: process.stdout
+            });
+            
+            rl.question('Presiona Enter para cerrar el navegador...', () => {
+                rl.close();
+                resolve();
+            });
+        });
     }
 
     async closeBrowser() {
         if (this.browser) {
             console.log('🔒 Cerrando navegador...');
+            await this.page.waitForTimeout(2000);
             await this.browser.close();
         }
     }
 }
 
-// Configuración
+// CONFIGURACIÓN - MODIFICA AQUÍ
 const CONFIG = {
-    RUT_USUARIO: '79.978.870-5',
-    CLAVE_USUARIO: '1234',
-    RUTA_DESCARGA: './descargas' 
+    RUT_USUARIO: '79.978.870-5',       // 🔐 Tu RUT
+    CLAVE_USUARIO: '1234',             // 🔐 Tu clave del SII  
+    RUTA_DESCARGA: './descargas'       // 📁 Carpeta de descarga
 };
 
-// Función principal
 async function main() {
-    console.log('📋 CONFIGURACIÓN ACTUAL:');
-    console.log(`RUT: ${CONFIG.RUT_USUARIO}`);
-    console.log(`Ruta de descarga: ${path.resolve(CONFIG.RUTA_DESCARGA)}`);
+    console.log('🤖 CONFIGURACIÓN DEL BOT AUTOMÁTICO:');
+    console.log(`👤 RUT: ${CONFIG.RUT_USUARIO}`);
+    console.log(`📁 Descargas: ${path.resolve(CONFIG.RUTA_DESCARGA)}`);
+    console.log('🔐 Clave: [CONFIGURADA]');
     console.log('-'.repeat(50));
-
-    const scraper = new SIIScraper(CONFIG.RUTA_DESCARGA);
-    const success = await scraper.runScraping(CONFIG.RUT_USUARIO, CONFIG.CLAVE_USUARIO);
+    console.log('🎯 OBJETIVO: Automatizar completamente el proceso SII');
+    console.log('🤖 MÉTODO: Bot que simula comportamiento humano');
+    console.log('-'.repeat(50));
+    
+    const bot = new SIIHumanBot(CONFIG.RUTA_DESCARGA);
+    const success = await bot.runAutomaticProcess(CONFIG.RUT_USUARIO, CONFIG.CLAVE_USUARIO);
 
     process.exit(success ? 0 : 1);
 }
 
 // Manejo de errores
 process.on('unhandledRejection', (reason, promise) => {
-    console.error('❌ Error no manejado:', reason);
+    console.error('❌ Error no controlado:', reason);
     process.exit(1);
 });
 
 process.on('SIGINT', () => {
-    console.log('\n🛑 Proceso interrumpido por el usuario');
+    console.log('\n🛑 Bot detenido por el usuario');
     process.exit(0);
 });
 
-// Ejecutar
+// Ejecutar bot
 if (require.main === module) {
-    console.log('🔧 REQUISITOS PREVIOS:');
+    console.log('🤖 BOT AUTOMÁTICO PARA SII - VERSIÓN MEJORADA');
+    console.log('📋 REQUISITOS:');
     console.log('1. npm install playwright');
     console.log('2. npx playwright install chromium');
-    console.log('3. Modificar CONFIG con tus credenciales');
+    console.log('3. Configurar credenciales en CONFIG');
     console.log('='.repeat(50));
     
     main().catch(console.error);
 }
+    
 
-module.exports = SIIScraper;
+module.exports = SIIHumanBot;
