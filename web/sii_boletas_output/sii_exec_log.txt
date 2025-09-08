@@ -3,27 +3,9 @@ Navegador iniciado correctamente
 Iniciando proceso de login en SII...
 Página de login cargada
 Elementos de login encontrados
-Escribiendo RUT: 799788705
+Escribiendo RUT: 21546785-9
 Escribiendo clave...
 Haciendo clic en botón Ingresar
-Login completado - navegación detectada
-Navegando al menú de Servicios online...
-Haciendo hover en Servicios online
-Dropdown de Servicios online desplegado
-Haciendo clic en Boletas de honorarios electrónicas
-Página de Boletas de honorarios electrónicas cargada
-Buscando enlace "Emisor de boleta de honorarios"...
-Enlace encontrado: <a href="https://www.sii.cl/servicios_online/1040-1287.html">Emisor de boleta de honorarios</a>
-Clic realizado en "Emisor de boleta de honorarios"
-Buscando "Consultas sobre boletas de honorarios electrónicas"...
-Enlace de consultas encontrado: <a class="collapsed arrow-click" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"> <i class="fa fa-chevron-circle-down pull-right" aria-hidden="true"></i>
-                                 <script type="text/javascript">menuSOL.escribeLink(1293, "", "", "")</script>Consultas sobre boletas de honorarios electrónicas
-                              </a>
-Clic realizado en "Consultas sobre boletas de honorarios electrónicas"
-Buscando "Consultar boletas emitidas"...
-Enlace "Consultar boletas emitidas" encontrado: <a href="javascript:linkVisita('https://loa.sii.cl/cgi_IMT/TMBCOC_MenuConsultasContrib.cgi?dummy=1461943167534', 'Consultar_boletas_emitidas')">Consultar boletas emitidas</a>
-Clic realizado en "Consultar boletas emitidas"
-Proceso completado exitosamente
-Se ha llegado a la sección de "Consultar boletas emitidas"
-Screenshot final guardado en: sii_boletas_output\sii_final_05-09-2025_12_38_46.png
+Error en login SII: No se pudo verificar el login exitoso
+Error en procesamiento SII: Login fallido
 Navegador cerrado
