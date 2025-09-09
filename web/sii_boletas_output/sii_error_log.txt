@@ -1,2 +1,0 @@
-Error en login SII: No se pudo verificar el login exitoso
-Error en procesamiento SII: Login fallido

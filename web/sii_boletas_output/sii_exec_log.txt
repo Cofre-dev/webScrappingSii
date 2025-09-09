@@ -3,9 +3,59 @@ Navegador iniciado correctamente
 Iniciando proceso de login en SII...
 Página de login cargada
 Elementos de login encontrados
-Escribiendo RUT: 21546785-9
+Escribiendo RUT: 79.978.870-5
 Escribiendo clave...
 Haciendo clic en botón Ingresar
-Error en login SII: No se pudo verificar el login exitoso
-Error en procesamiento SII: Login fallido
+Login completado - navegación detectada
+Navegando al menú de Servicios online...
+Haciendo hover en Servicios online
+Dropdown de Servicios online desplegado
+Haciendo clic en Boletas de honorarios electrónicas
+Página de Boletas de honorarios electrónicas cargada
+Buscando enlace "Emisor de boleta de honorarios"...
+Enlace encontrado: <a href="https://www.sii.cl/servicios_online/1040-1287.html">Emisor de boleta de honorarios</a>
+Clic realizado en "Emisor de boleta de honorarios"
+Buscando "Consultas sobre boletas de honorarios electrónicas"...
+Enlace de consultas encontrado: <a class="collapsed arrow-click" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo"> <i class="fa fa-chevron-circle-down pull-right" aria-hidden="true"></i>
+                                 <script type="text/javascript">menuSOL.escribeLink(1293, "", "", "")</script>Consultas sobre boletas de honorarios electrónicas
+                              </a>
+Clic realizado en "Consultas sobre boletas de honorarios electrónicas"
+Buscando "Consultar boletas emitidas"...
+Enlace "Consultar boletas emitidas" encontrado: <a href="javascript:linkVisita('https://loa.sii.cl/cgi_IMT/TMBCOC_MenuConsultasContrib.cgi?dummy=1461943167534', 'Consultar_boletas_emitidas')">Consultar boletas emitidas</a>
+Clic realizado en "Consultar boletas emitidas"
+Buscando botón "Consultar" con ID cmdconsultar124...
+Botón "Consultar" encontrado
+Información del botón: {
+  "existe": true,
+  "visible": true,
+  "texto": "Consultar",
+  "onclick": "presionaBoton('validar_anual')",
+  "html": "<input name=\"cmdconsultar12\" type=\"button\" id=\"cmdconsultar124\" value=\"Consultar\" onclick=\"presionaBoton('validar_anual')\">"
+}
+Clic realizado usando método directo
+Esperando navegación o carga de nueva página...
+URL actual después del clic: https://loa.sii.cl/cgi_IMT/TMBCOC_InformeAnualBhe.cgi?rut_arrastre=79978870&dv_arrastre=5&cbanoinformeanual=2025
+Iniciando análisis de tabla de resultados del informe anual...
+Tabla encontrada, procediendo con el análisis...
+Análisis completado. Meses analizados: 12
+  if ( xml_values['ene4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=01&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >ENERO<\/a>'); else document.write('ENERO'); ENERO: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumene'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['feb4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=02&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >FEBRERO<\/a>');else document.write('FEBRERO');FEBRERO: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumfeb'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['mar4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=03&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >MARZO<\/a>');else document.write('MARZO');MARZO: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['summar'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['abr4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=04&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >ABRIL<\/a>');else document.write('ABRIL');ABRIL: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumabr'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['may4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=05&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >MAYO<\/a>');else document.write('MAYO');MAYO: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['summay'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['jun4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=06&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >JUNIO<\/a>');else document.write('JUNIO');JUNIO: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumjun'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['jul4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=07&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >JULIO<\/a>');else document.write('JULIO');JULIO: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumjul'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['ago4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=08&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >AGOSTO<\/a>');else document.write('AGOSTO');AGOSTO: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumago'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['sep4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=09&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >SEPTIEMBRE<\/a>');else document.write('SEPTIEMBRE');SEPTIEMBRE: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumsep'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['oct4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=10&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >OCTUBRE<\/a>');else document.write('OCTUBRE');OCTUBRE: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumoct'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['nov4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=11&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >NOVIEMBRE<\/a>');  else document.write('NOVIEMBRE');NOVIEMBRE: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumnov'],'.')+ '&nbsp;');0" -> Limpio: "0"
+  if ( xml_values['dic4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=12&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >DICIEMBRE<\/a>'); else document.write('DICIEMBRE');DICIEMBRE: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumdic'],'.')+ '&nbsp;');0" -> Limpio: "0"
+⚠️ TODOS LOS TOTALES SON CERO - Procediendo a tomar screenshot...
+📸 Screenshot guardado: sii_boletas_output\799788705_09-09-2025_14-16-27.png
+📊 Motivo: Todos los valores de Total Líquido (12 meses) son cero o están vacíos
+Screenshot tomado por valores en cero: sii_boletas_output\799788705_09-09-2025_14-16-27.png
+Resumen: 12 meses analizados, todos con totales en cero
+Proceso completado exitosamente
+Análisis del informe anual de boletas de honorarios finalizado
+Screenshot final guardado en: sii_boletas_output\sii_final_09-09-2025_14_16_27.png
 Navegador cerrado
