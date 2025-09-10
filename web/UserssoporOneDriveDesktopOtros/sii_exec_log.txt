@@ -3,7 +3,7 @@ Navegador iniciado correctamente
 Iniciando proceso de login en SII...
 Página de login cargada
 Elementos de login encontrados
-Escribiendo RUT: 79978870-5
+Escribiendo RUT: 79.978.870-5
 Escribiendo clave...
 Haciendo clic en botón Ingresar
 Login completado - navegación detectada
@@ -51,9 +51,11 @@ Análisis completado. Meses analizados: 12
   if ( xml_values['nov4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=11&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >NOVIEMBRE<\/a>');  else document.write('NOVIEMBRE');NOVIEMBRE: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumnov'],'.')+ '&nbsp;');0" -> Limpio: "0"
   if ( xml_values['dic4'] > 0) document.write('<a href="TMBCOC_InformeMensualBhe.cgi?cbanoinformemensual='+xml_values['anio_consulta']+'&cbmesinformemensual=12&dv_arrastre='+xml_values['dv_arrastre'] +'&pagina_solicitada=0&rut_arrastre='+xml_values['rut_arrastre']+'" onmouseover="return overlib(\''+ xml_values['msg_mes'] +'\', AUTOSTATUS, WRAP);" onmouseout="return nd();" >DICIEMBRE<\/a>'); else document.write('DICIEMBRE');DICIEMBRE: [CERO] - Valor bruto: "document.write(formatMiles(xml_values['sumdic'],'.')+ '&nbsp;');0" -> Limpio: "0"
 ⚠️ TODOS LOS TOTALES SON CERO - Procediendo a tomar screenshot...
-📸 Screenshot guardado: sii_boletas_output\799788705_10-09-2025_15-08-08.png
+📸 Screenshot guardado: C:UserssoporOneDriveDesktopOtros\799788705_10-09-2025_12-03-39.png
 📊 Motivo: Todos los valores de Total Líquido (12 meses) son cero o están vacíos
+Screenshot tomado por valores en cero: C:UserssoporOneDriveDesktopOtros\799788705_10-09-2025_12-03-39.png
+Resumen: 12 meses analizados, todos con totales en cero
 Proceso completado exitosamente
 Análisis del informe anual de boletas de honorarios finalizado
-Screenshot final guardado en: sii_boletas_output\sii_final_10-09-2025_15_08_09.png
+Screenshot final guardado en: C:UserssoporOneDriveDesktopOtros\sii_final_10-09-2025_12_03_40.png
 Navegador cerrado

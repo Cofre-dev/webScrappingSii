@@ -11,7 +11,11 @@ const RUT = '79.978.870-5';
 const CLAVE = '1234';
 
 // Directorio de salida por defecto
-const destino = process.env.DESTINO || './sii_boletas_output';
+const destino = process.env.DESTINO || 'C:\\Users\\sopor\\OneDrive\\Desktop\\Otros';
+
+if (!fs.existsSync(destino)){
+    fs.mkdirSync(destino, {recursive: true});
+}
 
 /****************************************************************************************
  * Helpers generales
