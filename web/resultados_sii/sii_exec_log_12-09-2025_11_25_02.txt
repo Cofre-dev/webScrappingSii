@@ -1,0 +1,14 @@
+🚀 Iniciando proceso SII...
+✅ Navegador iniciado
+=== 📝 INICIANDO CONSULTA BOLETAS EMITIDAS ===
+🔐 Iniciando proceso de login en SII...
+✅ Página de login cargada
+✅ Elementos de login encontrados
+📝 Escribiendo RUT: 21546132-7
+📝 Escribiendo clave...
+🖱️ Haciendo clic en botón Ingresar
+✅ Login completado - navegación detectada
+🧭 Navegando al menú de Servicios online...
+❌ Error navegando a boletas de honorarios: Waiting for selector `#main-menu li.dropdown a[href="https://www.sii.cl/servicios_online/"]` failed
+❌ Error en procesamiento SII: Navegación fallida
+🔒 Navegador cerrado

@@ -1,0 +1,2 @@
+❌ Error navegando a boletas de honorarios: Waiting for selector `#main-menu li.dropdown a[href="https://www.sii.cl/servicios_online/"]` failed
+❌ Error en procesamiento SII: Navegación fallida

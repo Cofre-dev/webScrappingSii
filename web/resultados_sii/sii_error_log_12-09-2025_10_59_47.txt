@@ -1,0 +1,2 @@
+❌ Error navegando a boletas de honorarios: Waiting failed: 3000ms exceeded
+❌ Error en procesamiento SII: Navegación fallida
